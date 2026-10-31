@@ -68,8 +68,34 @@ __device__ float block_reduce_sum(float val, float* shared) {
     return block_sum;
 }
 
-# Step 4 - block_reduce_max (not yet solved)
-# TODO: implement
+# Step 4 - block_reduce_max
+__device__ float block_reduce_max(float val, float* shared) {
+    // TODO: block-wide max via warp_reduce_max + shared memory
+    int tid = threadIdx.x;
+    int lane = tid%32;
+    int warp_id = tid/32;
+
+    int num_warps = (blockDim.x + 31)/32;
+
+    float warp_max = warp_reduce_max(val);
+
+    if(lane==0){
+        shared[warp_id] = warp_max;
+    }
+
+    __syncthreads();
+
+    float block_max = -INFINITY;
+    // number of warps == number of lanes in warp 0
+    if(warp_id==0){
+        if(lane < num_warps){
+            block_max = shared[lane];
+        }
+        block_max = warp_reduce_max(block_max);
+    }
+
+    return block_max;
+}
 
 # Step 5 - add_residual_kernel (not yet solved)
 # TODO: implement
