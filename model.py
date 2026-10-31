@@ -1,0 +1,80 @@
+"""
+Fused LLM Inference Kernels in CUDA
+
+Assembled from your step-by-step solutions.
+"""
+
+import numpy as np
+
+# Step 1 - warp_reduce_sum
+// Function runs for one specific lane (out of the 32 lanes)
+__device__ float warp_reduce_sum(float val) {
+    unsigned int mask = 0xffffffff;
+
+    // lane id is already known for the lane for which this function will be executed
+    // mask determines which lanes participate in shuffle
+    for (int offset = 16; offset > 0; offset>>=1){
+        // __shfl_xor_sync returns val of the lane whose laneId is curr_laneId ^ offset
+        val+=__shfl_xor_sync(mask, val, offset);
+    }
+
+    return val;
+}
+
+# Step 2 - warp_reduce_max (not yet solved)
+# TODO: implement
+
+# Step 3 - block_reduce_sum (not yet solved)
+# TODO: implement
+
+# Step 4 - block_reduce_max (not yet solved)
+# TODO: implement
+
+# Step 5 - add_residual_kernel (not yet solved)
+# TODO: implement
+
+# Step 6 - gelu_kernel (not yet solved)
+# TODO: implement
+
+# Step 7 - silu_kernel (not yet solved)
+# TODO: implement
+
+# Step 8 - swiglu_kernel (not yet solved)
+# TODO: implement
+
+# Step 9 - rmsnorm_kernel (not yet solved)
+# TODO: implement
+
+# Step 10 - layernorm_kernel (not yet solved)
+# TODO: implement
+
+# Step 11 - fused_add_rmsnorm_kernel (not yet solved)
+# TODO: implement
+
+# Step 12 - softmax_row_kernel (not yet solved)
+# TODO: implement
+
+# Step 13 - causal_softmax_kernel (not yet solved)
+# TODO: implement
+
+# Step 14 - embedding_lookup_kernel (not yet solved)
+# TODO: implement
+
+# Step 15 - rope_kernel (not yet solved)
+# TODO: implement
+
+# Step 16 - linear_kernel (not yet solved)
+# TODO: implement
+
+# Step 17 - fused_linear_bias_gelu_kernel (not yet solved)
+# TODO: implement
+
+# Step 18 - mlp_swiglu_forward (not yet solved)
+# TODO: implement
+
+# Step 19 - rmsnorm_residual_block (not yet solved)
+# TODO: implement
+
+# Step 20 - run_transformer_ffn (not yet solved)
+# TODO: implement
+
